@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4f0e8">
+<title>مساري | متتبع العادات والتحليل</title>
+<style>
+:root{
+  --bg:#f4f0e8;
+  --paper:#fffdf8;
+  --paper-2:#faf6ef;
+  --ink:#1e2a25;
+  --muted:#718078;
+  --line:#ddd5c8;
+  --sage:#668673;
+  --sage-dark:#456050;
+  --sage-soft:#e7efe9;
+  --done:#3f8f5d;
+  --done-soft:#dff0e4;
+  --missed:#c85e55;
+  --missed-soft:#f5dfdc;
+  --neutral:#ece6dc;
+  --gold:#c5a15c;
+  --shadow:0 24px 70px rgba(48,58,51,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 0% 0%,rgba(102,134,115,.16),transparent 28%),
+    radial-gradient(circle at 100% 100%,rgba(200,94,85,.09),transparent 24%),
+    var(--bg);
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.app{max-width:1620px;margin:auto;padding:18px}
+.shell{display:grid;grid-template-columns:285px minmax(0,1fr);gap:18px}
+.sidebar,.main{
+  background:rgba(255,253,248,.96);
+  border:1px solid var(--line);
+  border-radius:28px;
+  box-shadow:var(--shadow);
+}
+.sidebar{
+  padding:18px;
+  position:sticky;
+  top:18px;
+  height:calc(100vh - 36px);
+  overflow:auto;
+}
+.main{padding:22px;min-width:0}
+.profile-card{
+  padding:18px;text-align:center;border-radius:22px;
+  background:linear-gradient(145deg,#e6eee8,#faf5ed);
+  border:1px solid #d6dfd7;
+}
+.avatar-wrap{position:relative;width:96px;height:96px;margin:0 auto 12px}
+.avatar{
+  width:96px;height:96px;border-radius:50%;object-fit:cover;
+  border:4px solid #fff;background:#dbe5dd;
+  box-shadow:0 12px 28px rgba(68,94,79,.16)
+}
+.avatar-btn{
+  position:absolute;left:2px;bottom:2px;width:32px;height:32px;border-radius:50%;
+  border:2px solid #fff;background:var(--sage);color:#fff;font-weight:900
+}
+.profile-card h3{margin:0 0 4px;font-size:21px}
+.profile-card p{margin:0;color:var(--muted);font-size:13px}
+.nav{display:grid;gap:8px;margin:18px 0}
+.nav button{
+  border:0;background:transparent;color:var(--muted);
+  text-align:right;padding:12px 14px;border-radius:13px;font-weight:750
+}
+.nav button:hover,.nav button.active{background:var(--sage-soft);color:var(--sage-dark)}
+.side-card{
+  margin-top:14px;padding:15px;border-radius:18px;
+  background:var(--paper-2);border:1px solid var(--line)
+}
+.side-card h4{margin:0 0 12px}
+.ring{
+  width:132px;height:132px;border-radius:50%;margin:auto;display:grid;place-items:center;
+  background:conic-gradient(var(--done) var(--pct),#e5dfd4 0);position:relative
+}
+.ring::after{content:"";position:absolute;inset:12px;border-radius:50%;background:var(--paper)}
+.ring .inner{position:relative;z-index:1;text-align:center}
+.ring strong{display:block;font-size:30px}.ring span{font-size:12px;color:var(--muted)}
+.legend{display:grid;gap:8px;margin-top:14px}
+.legend-row{display:flex;justify-content:space-between;color:var(--muted);font-size:13px}
+.legend-row i{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:7px}
+.topbar{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.brand h1{margin:0;font-size:40px;letter-spacing:-1.4px}.brand h1 span{color:var(--sage)}
+.brand p{margin:6px 0 0;color:var(--muted)}
+.actions{display:flex;gap:9px;flex-wrap:wrap}
+.control,.btn{
+  border:1px solid var(--line);background:var(--paper);color:var(--ink);
+  padding:11px 14px;border-radius:13px
+}
+.btn.primary{background:var(--sage);border-color:var(--sage);color:#fff}
+.btn.warm{background:#b9785c;border-color:#b9785c;color:#fff}
+.btn.danger{color:#a54d46}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin:20px 0}
+.hero-banner{
+  min-height:245px;border-radius:25px;padding:28px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(120deg,rgba(35,55,45,.93),rgba(79,109,89,.84)),linear-gradient(135deg,#7e9987,#d4bfa0);
+}
+.hero-banner:before,.hero-banner:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.12)}
+.hero-banner:before{width:240px;height:240px;left:-70px;top:-65px}
+.hero-banner:after{width:170px;height:170px;left:130px;bottom:-90px}
+.hero-banner h2{position:relative;z-index:1;font-size:35px;margin:0 0 10px}
+.hero-banner p{position:relative;z-index:1;max-width:620px;line-height:1.8;color:#edf4ef;margin:0}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat-card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:18px}
+.stat-card strong{display:block;font-size:30px;color:var(--sage-dark)}
+.stat-card span{font-size:13px;color:var(--muted)}
+.section{
+  margin-top:18px;background:var(--paper);
+  border:1px solid var(--line);border-radius:24px;padding:18px
+}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:15px}
+.section-head h2{margin:0;font-size:22px}
+.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.mode-switch{display:flex;gap:7px;padding:5px;background:#f0ebe2;border-radius:13px}
+.mode{border:0;background:transparent;color:var(--muted);padding:9px 12px;border-radius:9px;font-weight:800}
+.mode.done.active{background:var(--done);color:#fff}
+.mode.missed.active{background:var(--missed);color:#fff}
+
+/* Circular racetrack */
+.tracker-shell{display:grid;grid-template-columns:1fr;gap:16px}
+.tracker-card{
+  border:1px solid var(--line);
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(102,134,115,.08),transparent 34%),
+    linear-gradient(180deg,#fffefa,#fbf8f2);
+  padding:18px;
+  overflow:auto;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9)
+}
+.svg-wrap{min-width:900px;display:flex;justify-content:center}
+#trackerSvg{width:100%;max-width:1180px;height:auto;overflow:visible}
+.track-segment{cursor:pointer;transition:transform .16s,filter .16s,opacity .16s}
+.track-segment:hover{filter:brightness(.95);opacity:.94}
+.day-label{font-size:11px;fill:#657168;font-weight:800;pointer-events:none}
+.habit-label{font-size:14px;fill:#1f2b26;font-weight:900;pointer-events:none}
+.habit-label-sub{font-size:10px;fill:#7b877f;font-weight:600;pointer-events:none}
+.habit-label-box{fill:#fffdfa;stroke:#d8d1c5;stroke-width:1.2}
+.habit-label-accent{stroke:#668673;stroke-width:5;stroke-linecap:round}
+.habit-label-line{stroke:#a5afa8;stroke-width:1.2;stroke-dasharray:4 5}
+.center-disc{fill:#fffdf8;stroke:#d8d1c5;stroke-width:2}
+.center-ring{fill:none;stroke:#668673;stroke-width:7;stroke-linecap:round}
+.center-title{font-size:30px;fill:#223029;font-weight:900}
+.center-sub{font-size:14px;fill:#7b877f}
+.center-rate{font-size:22px;fill:#4d6b57;font-weight:900}
+.track-guide{fill:none;stroke:#e4ddd2;stroke-width:1}
+.track-start-line{stroke:#b6c0b9;stroke-width:1.2}
+.habit-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:10px
+}
+.habit-row{
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+  background:linear-gradient(180deg,#fffefa,#faf6ef)
+}
+.habit-row h4{margin:0 0 4px}
+.habit-row p{margin:0;color:var(--muted);font-size:12px}
+.habit-row button{margin-top:9px;width:100%}
+
+/* Analytics */
+.analytics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.metric{
+  border:1px solid var(--line);border-radius:18px;padding:16px;background:#fffefa
+}
+.metric strong{display:block;font-size:28px;color:var(--sage-dark)}
+.metric span{font-size:12px;color:var(--muted)}
+.analysis-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:14px}
+.chart-card,.insight-card{
+  border:1px solid var(--line);border-radius:20px;padding:15px;background:#fffefa
+}
+.chart-card h3,.insight-card h3{margin:0 0 12px;font-size:17px}
+.bar-chart{display:grid;gap:10px}
+.bar-row{display:grid;grid-template-columns:130px 1fr 54px;gap:10px;align-items:center}
+.bar-label{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{height:12px;background:#ece6dc;border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--sage),#8aa294);border-radius:999px}
+.bar-value{text-align:left;font-size:12px;color:var(--muted)}
+.insights{display:grid;gap:10px}
+.insight{
+  padding:13px;border-radius:15px;background:var(--sage-soft);border:1px solid #d9e5dc;line-height:1.7
+}
+.insight.warn{background:#f7ebe7;border-color:#efd8d2}
+.insight strong{display:block;margin-bottom:3px}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:12px}
+.week-day{padding:10px;border:1px solid var(--line);border-radius:14px;text-align:center;background:#fbf8f2}
+.week-day strong{display:block;font-size:20px}.week-day span{font-size:11px;color:var(--muted)}
+.trend-card{margin-top:14px;border:1px solid var(--line);border-radius:20px;padding:15px;background:#fffefa}
+.trend-card svg{width:100%;height:240px}
+.trend-line{fill:none;stroke:var(--sage);stroke-width:4}
+.trend-dot{fill:#b9785c;stroke:#fff;stroke-width:3}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.gallery-card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}
+.gallery-card img{width:100%;height:150px;object-fit:cover;background:#ece7de}
+.gallery-meta{padding:10px}.gallery-meta h4{margin:0 0 4px;font-size:14px}
+.gallery-meta p{margin:0;color:var(--muted);font-size:12px}
+.empty{grid-column:1/-1;border:1px dashed var(--line);border-radius:18px;padding:34px;text-align:center;color:var(--muted);background:#fbf9f5}
+.measure-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.measure{border:1px solid var(--line);border-radius:16px;padding:13px;background:#fbfaf7}
+.measure label{display:block;color:var(--muted);font-size:12px}
+.measure input{width:100%;border:0;background:transparent;outline:none;font-size:22px;font-weight:800;color:var(--ink)}
+.modal{position:fixed;inset:0;background:rgba(31,43,38,.55);display:grid;place-items:center;padding:20px;z-index:50}
+.modal-card{width:min(620px,100%);background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 26px 80px rgba(0,0,0,.22)}
+.modal-card h2{margin-top:0}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
+.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff;outline:none}
+.field.full{grid-column:1/-1}
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,25px);opacity:0;background:#27352e;color:#fff;padding:11px 16px;border-radius:12px;transition:.2s;z-index:80}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1220px){
+  .shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}
+  .tracker-shell{grid-template-columns:1fr}.habit-list{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:920px){
+  .hero,.grid-2,.analysis-layout{grid-template-columns:1fr}
+  .analytics-grid{grid-template-columns:1fr 1fr}
+  .measure-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+  .app{padding:8px}.main,.sidebar{padding:13px;border-radius:18px}
+  .brand h1{font-size:30px}.hero-banner h2{font-size:28px}
+  .profile-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
+  .gallery{grid-template-columns:1fr}.measure-grid{grid-template-columns:1fr}
+  .analytics-grid{grid-template-columns:1fr}
+  .habit-list{grid-template-columns:1fr}
+}
+
+/* A4 monthly report */
+#printSheet{display:none}
+@page{size:A4 landscape;margin:9mm}
+@media print{
+  html,body{background:#fff!important}
+  body *{visibility:hidden!important}
+  #printSheet,#printSheet *{visibility:visible!important}
+  #printSheet{
+    display:block!important;
+    position:absolute;
+    inset:0;
+    width:100%;
+    color:#1e2a25;
+    background:#fff;
+    direction:rtl;
+    font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+  }
+  .print-page{
+    width:100%;
+    min-height:185mm;
+    padding:4mm;
+    page-break-after:always;
+  }
+  .print-page:last-child{page-break-after:auto}
+  .print-header{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    border-bottom:2px solid #668673;padding-bottom:4mm;margin-bottom:4mm
+  }
+  .print-header h1{margin:0;font-size:24pt}
+  .print-header p{margin:2mm 0 0;color:#647269;font-size:10pt}
+  .print-badge{
+    border:1px solid #cfc7bb;border-radius:10px;padding:3mm 5mm;
+    background:#f8f4ed;font-weight:800
+  }
+  .print-layout{display:grid;grid-template-columns:2.2fr 1fr;gap:5mm}
+  .print-tracker{
+    border:1px solid #d8d1c5;border-radius:12px;padding:3mm;background:#fffdfa
+  }
+  .print-tracker svg{width:100%;height:150mm}
+  .print-summary{display:grid;gap:3mm;align-content:start}
+  .print-stat{
+    border:1px solid #d8d1c5;border-radius:10px;padding:3mm;background:#fbf8f2
+  }
+  .print-stat strong{display:block;font-size:18pt;color:#456050}
+  .print-stat span{font-size:9pt;color:#718078}
+  .print-table{
+    width:100%;border-collapse:collapse;font-size:9pt;margin-top:2mm
+  }
+  .print-table th,.print-table td{
+    border:1px solid #d8d1c5;padding:2mm;text-align:center
+  }
+  .print-table th{background:#eaf1eb}
+  .print-insight{
+    border:1px solid #d8d1c5;border-radius:10px;padding:3mm;
+    background:#f7f3ec;font-size:9pt;line-height:1.6
+  }
+  .print-footer{
+    margin-top:3mm;padding-top:2mm;border-top:1px solid #ddd5c8;
+    color:#718078;font-size:8pt;text-align:center
+  }
+}
+
+</style>
+</head>
+<body>
+
+<input id="avatarInput" type="file" accept="image/*" hidden>
+<input id="galleryInput" type="file" accept="image/*" multiple hidden>
+
+<div id="authModal" class="modal">
+  <div class="modal-card">
+    <h2>تسجيل الدخول / إنشاء حساب</h2>
+    <p style="color:var(--muted)">إذا لم يكن الحساب موجودًا سيتم إنشاؤه تلقائيًا.</p>
+    <div class="profile-grid">
+      <div class="field"><label>الاسم</label><input id="authName"></div>
+      <div class="field"><label>البريد الإلكتروني</label><input id="authEmail" type="email"></div>
+      <div class="field full"><label>كلمة المرور</label><input id="authPassword" type="password"></div>
+    </div>
+    <button id="authBtn" class="btn primary" style="width:100%;margin-top:14px">دخول / إنشاء</button>
+    <p style="font-size:12px;color:var(--muted)">هذه النسخة تحفظ البيانات داخل متصفحك فقط.</p>
+  </div>
+</div>
+
+<div id="profileModal" class="modal hidden">
+  <div class="modal-card">
+    <h2>حسابي الشخصي</h2>
+    <div class="profile-grid">
+      <div class="field"><label>الاسم الكامل</label><input id="fullName"></div>
+      <div class="field"><label>رقم الهاتف</label><input id="phone"></div>
+      <div class="field"><label>البريد الإلكتروني</label><input id="email"></div>
+      <div class="field"><label>تاريخ الميلاد</label><input id="birth" type="date"></div>
+      <div class="field full"><label>عنوان السكن</label><input id="address"></div>
+      <div class="field full"><label>نبذة شخصية</label><textarea id="bio" rows="3"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button id="closeProfileModal" class="btn">إغلاق</button>
+      <button id="saveProfile" class="btn primary">حفظ المعلومات</button>
+    </div>
+  </div>
+</div>
+
+<div id="habitModal" class="modal hidden">
+  <div class="modal-card">
+    <h2>إضافة أو تعديل عادة</h2>
+    <div class="profile-grid">
+      <div class="field"><label>اسم العادة</label><input id="habitName"></div>
+      <div class="field full"><label>الوصف</label><input id="habitDesc"></div>
+    </div>
+    <div class="modal-actions">
+      <button id="cancelHabit" class="btn">إلغاء</button>
+      <button id="saveHabit" class="btn primary">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="profile-card">
+        <div class="avatar-wrap">
+          <img id="avatar" class="avatar" alt="الصورة الشخصية">
+          <button id="avatarBtn" class="avatar-btn">＋</button>
+        </div>
+        <h3 id="sideName"></h3>
+        <p id="sideEmail"></p>
+      </div>
+
+      <div class="nav">
+        <button class="active" data-target="dashboard">لوحة التحكم</button>
+        <button data-target="trackerSection">مضمار العادات</button>
+        <button data-target="analysisSection">التحليل الكامل</button>
+        <button data-target="foodSection">الصور والوجبات</button>
+        <button data-target="measureSection">المقاسات</button>
+        <button id="openProfileBtn">حسابي الشخصي</button>
+      </div>
+
+      <div class="side-card">
+        <h4>ملخص الشهر</h4>
+        <div id="progressRing" class="ring" style="--pct:0%">
+          <div class="inner"><strong id="percentText">0%</strong><span>معدل الإنجاز</span></div>
+        </div>
+        <div class="legend">
+          <div class="legend-row"><span><i style="background:var(--done)"></i>منجز</span><b id="doneTotal">0</b></div>
+          <div class="legend-row"><span><i style="background:var(--missed)"></i>غير منجز</span><b id="missedTotal">0</b></div>
+          <div class="legend-row"><span><i style="background:#aeb1ab"></i>غير محدد</span><b id="neutralTotal">0</b></div>
+        </div>
+      </div>
+      <button id="logoutBtn" class="btn" style="width:100%;margin-top:14px">تسجيل الخروج</button>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="brand">
+          <h1>مساري<span>.</span></h1>
+          <p>مضمار دائري احترافي مع تحليل كامل للالتزام.</p>
+        </div>
+        <div class="actions">
+          <select id="month" class="control"></select>
+          <select id="year" class="control"></select>
+          <button id="exportBtn" class="btn">تصدير البيانات</button>
+          <button id="printPdfBtn" class="btn primary">طباعة PDF A4</button>
+        </div>
+      </div>
+
+      <section id="dashboard" class="hero">
+        <div class="hero-banner">
+          <h2>كل عادة لها مسار واضح</h2>
+          <p>اضغط على أي جزء من المضمار لتسجيل اليوم كمنجز أو غير منجز، ثم راقب تحليلك الشهري بالتفصيل.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card"><strong id="doneStat">0</strong><span>أيام منجزة</span></div>
+          <div class="stat-card"><strong id="missedStat">0</strong><span>أيام غير منجزة</span></div>
+          <div class="stat-card"><strong id="habitStat">0</strong><span>عدد العادات</span></div>
+          <div class="stat-card"><strong id="photoStat">0</strong><span>صور محفوظة</span></div>
+        </div>
+      </section>
+
+      <section id="trackerSection" class="section">
+        <div class="section-head">
+          <div>
+            <h2>مضمار العادات الدائري</h2>
+            <p>دائرة ناقصة ربعًا، 31 يومًا، وكل حلقة تمثل عادة مستقلة.</p>
+          </div>
+          <div style="display:flex;gap:9px;flex-wrap:wrap">
+            <div class="mode-switch">
+              <button class="mode done active" data-mode="done">منجز</button>
+              <button class="mode missed" data-mode="missed">غير منجز</button>
+            </div>
+            <button id="addHabitBtn" class="btn primary">＋ إضافة عادة</button>
+          </div>
+        </div>
+        <div class="tracker-shell">
+          <div class="tracker-card">
+            <div class="svg-wrap">
+              <svg id="trackerSvg" viewBox="0 0 1180 820"></svg>
+            </div>
+          </div>
+          <div id="habitList" class="habit-list"></div>
+        </div>
+      </section>
+
+      <section id="analysisSection" class="section">
+        <div class="section-head">
+          <div>
+            <h2>التحليل الكامل</h2>
+            <p>تحليل الالتزام، أفضل عادة، أضعف عادة، السلسلة، ونسبة كل عادة.</p>
+          </div>
+        </div>
+
+        <div class="analytics-grid">
+          <div class="metric"><strong id="analysisRate">0%</strong><span>معدل الالتزام</span></div>
+          <div class="metric"><strong id="bestStreak">0</strong><span>أفضل سلسلة متواصلة</span></div>
+          <div class="metric"><strong id="bestHabit">—</strong><span>أفضل عادة</span></div>
+          <div class="metric"><strong id="weakHabit">—</strong><span>أضعف عادة</span></div>
+        </div>
+
+        <div class="analysis-layout">
+          <div class="chart-card">
+            <h3>نسبة الإنجاز لكل عادة</h3>
+            <div id="habitBars" class="bar-chart"></div>
+          </div>
+          <div class="insight-card">
+            <h3>استنتاجات ذكية</h3>
+            <div id="insights" class="insights"></div>
+          </div>
+        </div>
+
+        <div class="trend-card">
+          <h3 style="margin:0 0 8px">أداء أيام الأسبوع</h3>
+          <div id="weekGrid" class="week-grid"></div>
+        </div>
+
+        <div class="trend-card">
+          <h3 style="margin:0 0 8px">تطور الالتزام خلال الشهر</h3>
+          <svg id="commitmentChart" viewBox="0 0 900 240" preserveAspectRatio="none"></svg>
+        </div>
+      </section>
+
+      <div class="grid-2">
+        <section id="foodSection" class="section">
+          <div class="section-head">
+            <div><h2>صور الوجبات والتقدم</h2><p>ارفع صور أكلك أو صور قبل وبعد.</p></div>
+            <button id="uploadGallery" class="btn warm">＋ رفع صور</button>
+          </div>
+          <div id="gallery" class="gallery"></div>
+        </section>
+
+        <section id="measureSection" class="section">
+          <div class="section-head">
+            <div><h2>مقاسات الجسم</h2><p>حفظ القياسات بتاريخ اليوم.</p></div>
+            <button id="saveMeasures" class="btn primary">حفظ القياس</button>
+          </div>
+          <div class="measure-grid">
+            <div class="measure"><label>الوزن كغ</label><input id="weight" type="number" step=".1"></div>
+            <div class="measure"><label>الطول سم</label><input id="height" type="number" step=".1"></div>
+            <div class="measure"><label>الخصر سم</label><input id="waist" type="number" step=".1"></div>
+            <div class="measure"><label>الصدر سم</label><input id="chest" type="number" step=".1"></div>
+            <div class="measure"><label>الذراع سم</label><input id="arm" type="number" step=".1"></div>
+            <div class="measure"><label>الفخذ سم</label><input id="thigh" type="number" step=".1"></div>
+            <div class="measure"><label>الورك سم</label><input id="hips" type="number" step=".1"></div>
+            <div class="measure"><label>الدهون %</label><input id="fat" type="number" step=".1"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+
+<div id="printSheet">
+  <section class="print-page">
+    <div class="print-header">
+      <div>
+        <h1>مساري — المتابعة الشهرية</h1>
+        <p id="printUserLine"></p>
+      </div>
+      <div id="printMonthBadge" class="print-badge"></div>
+    </div>
+
+    <div class="print-layout">
+      <div class="print-tracker">
+        <div id="printTrackerMount"></div>
+      </div>
+      <aside class="print-summary">
+        <div class="print-stat"><strong id="printRate">0%</strong><span>معدل الالتزام</span></div>
+        <div class="print-stat"><strong id="printDone">0</strong><span>إجمالي الأيام المنجزة</span></div>
+        <div class="print-stat"><strong id="printStreak">0</strong><span>أفضل سلسلة متواصلة</span></div>
+        <div class="print-stat"><strong id="printBestHabit">—</strong><span>أفضل عادة</span></div>
+        <div class="print-insight" id="printRecommendation"></div>
+      </aside>
+    </div>
+
+    <table class="print-table">
+      <thead>
+        <tr>
+          <th>العادة</th>
+          <th>منجز</th>
+          <th>غير منجز</th>
+          <th>غير محدد</th>
+          <th>نسبة الإنجاز</th>
+          <th>أفضل سلسلة</th>
+        </tr>
+      </thead>
+      <tbody id="printHabitRows"></tbody>
+    </table>
+
+    <div class="print-footer">تم إنشاء هذا التقرير من موقع مساري — اختر “Save as PDF” من نافذة الطباعة.</div>
+  </section>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const months=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const weekNames=["أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"];
+const defaultAvatar="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='300' height='300' rx='150' fill='%23dfe8e1'/%3E%3Ccircle cx='150' cy='112' r='48' fill='%236f8f7a'/%3E%3Cpath d='M55 260c12-58 49-88 95-88s83 30 95 88' fill='%236f8f7a'/%3E%3C/svg%3E";
+const defaultHabits=[
+  {name:"الاستيقاظ مبكرًا",desc:"قبل الساعة 6:00"},
+  {name:"صلاة الفجر",desc:"في وقتها"},
+  {name:"قراءة",desc:"20 صفحة يوميًا"},
+  {name:"تمرين رياضي",desc:"45 دقيقة"},
+  {name:"شرب الماء",desc:"8 أكواب يوميًا"},
+  {name:"نوم مبكر",desc:"قبل 11 مساءً"}
+];
+
+let currentUser=null,currentMode="done",editingHabit=null;
+let state={month:new Date().getMonth(),year:new Date().getFullYear(),profile:{},habits:[],checks:{},photos:[],measurements:[]};
+
+function toast(t){const x=$("#toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1700)}
+function users(){return JSON.parse(localStorage.getItem("masariUsers")||"{}")}
+function saveUsers(u){localStorage.setItem("masariUsers",JSON.stringify(u))}
+function key(){return`masari:${currentUser.email}:${state.year}-${state.month}`}
+function save(){localStorage.setItem(key(),JSON.stringify(state))}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function setupSelectors(){
+  $("#month").innerHTML="";$("#year").innerHTML="";
+  months.forEach((m,i)=>$("#month").insertAdjacentHTML("beforeend",`<option value="${i}">${m}</option>`));
+  for(let y=2025;y<=2035;y++)$("#year").insertAdjacentHTML("beforeend",`<option>${y}</option>`);
+  $("#month").value=state.month;$("#year").value=state.year;
+}
+function fresh(){
+  return{
+    month:state.month,year:state.year,
+    profile:{fullName:currentUser.name,email:currentUser.email,phone:"",birth:"",address:"",bio:"",avatar:defaultAvatar},
+    habits:JSON.parse(JSON.stringify(defaultHabits)),checks:{},photos:[],measurements:[]
+  }
+}
+function load(){
+  const raw=localStorage.getItem(key());
+  state=raw?JSON.parse(raw):fresh();
+  bindProfile();renderTracker();renderHabitList();renderGallery();bindMeasures();updateAll();save();
+}
+function showApp(){
+  $("#authModal").classList.add("hidden");$("#app").classList.remove("hidden");setupSelectors();load();
+}
+function bindProfile(){
+  const p=state.profile||{};
+  $("#avatar").src=p.avatar||defaultAvatar;$("#sideName").textContent=p.fullName||currentUser.name;$("#sideEmail").textContent=p.email||currentUser.email;
+  ["fullName","phone","email","birth","address","bio"].forEach(id=>$("#"+id).value=p[id]||"");
+}
+function polar(cx,cy,r,deg){const a=deg*Math.PI/180;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)}}
+function arcPath(cx,cy,r1,r2,a0,a1){
+  const p1=polar(cx,cy,r2,a0),p2=polar(cx,cy,r2,a1),p3=polar(cx,cy,r1,a1),p4=polar(cx,cy,r1,a0);
+  const large=(a1-a0)>180?1:0;
+  return`M${p1.x},${p1.y} A${r2},${r2} 0 ${large} 1 ${p2.x},${p2.y} L${p3.x},${p3.y} A${r1},${r1} 0 ${large} 0 ${p4.x},${p4.y} Z`;
+}
+function S(tag,attrs={}){const e=document.createElementNS("http://www.w3.org/2000/svg",tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e}
+function renderTracker(){
+  const svg=$("#trackerSvg");svg.innerHTML="";
+  const cx=720,cy=430;
+  const start=-155,end=155,totalAngle=end-start; // premium horseshoe opening on the left
+  const inner=122,outer=360;
+  const hcount=Math.max(1,state.habits.length);
+  const ring=(outer-inner)/hcount;
+  const days=31,gap=.72;
+  const labelX=42,labelW=285;
+
+  // subtle guide arcs
+  for(let h=0;h<=state.habits.length;h++){
+    const r=inner+h*ring;
+    svg.appendChild(S("path",{
+      d:arcPath(cx,cy,r-.55,r+.55,start,end),
+      fill:"#e5ded3",
+      opacity:".6"
+    }));
+  }
+
+  for(let h=0;h<state.habits.length;h++){
+    const r1=inner+h*ring+4;
+    const r2=inner+(h+1)*ring-4;
+    for(let d=1;d<=days;d++){
+      const a0=start+(d-1)*totalAngle/days+gap/2;
+      const a1=start+d*totalAngle/days-gap/2;
+      const status=state.checks[`${h}-${d}`];
+      const fill=status==="done"?"#3f8f5d":status==="missed"?"#c85e55":"#ece6dc";
+      const path=S("path",{
+        d:arcPath(cx,cy,r1,r2,a0,a1),
+        fill,
+        stroke:"#cfc7bb",
+        "stroke-width":".7",
+        class:"track-segment"
+      });
+      path.onclick=()=>{
+        state.checks[`${h}-${d}`]=currentMode;
+        save();
+        renderTracker();
+        updateAll();
+      };
+      svg.appendChild(path);
+    }
+  }
+
+  // Outer day labels
+  for(let d=1;d<=31;d++){
+    const a=start+(d-.5)*totalAngle/31;
+    const p=polar(cx,cy,382,a);
+    const t=S("text",{
+      x:p.x,y:p.y,
+      "text-anchor":"middle",
+      "dominant-baseline":"middle",
+      class:"day-label"
+    });
+    t.textContent=d;
+    svg.appendChild(t);
+  }
+
+  // Professional aligned habit labels on the left, each connected to its lane
+  state.habits.forEach((habit,h)=>{
+    const midR=inner+(h+.5)*ring;
+    const anchor=polar(cx,cy,midR,180);
+    const rowY=178+h*68;
+    const boxH=52;
+
+    svg.appendChild(S("line",{
+      x1:labelX+labelW,
+      y1:rowY,
+      x2:anchor.x-8,
+      y2:anchor.y,
+      class:"habit-label-line"
+    }));
+
+    svg.appendChild(S("rect",{
+      x:labelX,y:rowY-boxH/2,width:labelW,height:boxH,
+      rx:"13",ry:"13",class:"habit-label-box"
+    }));
+
+    svg.appendChild(S("line",{
+      x1:labelX+12,y1:rowY-15,x2:labelX+12,y2:rowY+15,
+      class:"habit-label-accent"
+    }));
+
+    const num=S("text",{
+      x:labelX+34,y:rowY+5,
+      "text-anchor":"middle",class:"habit-label"
+    });
+    num.textContent=(h+1);
+    svg.appendChild(num);
+
+    const title=S("text",{
+      x:labelX+58,y:rowY-(habit.desc?4:-1),
+      "text-anchor":"start",class:"habit-label"
+    });
+    title.textContent=habit.name;
+    svg.appendChild(title);
+
+    if(habit.desc){
+      const sub=S("text",{
+        x:labelX+58,y:rowY+13,
+        "text-anchor":"start",class:"habit-label-sub"
+      });
+      sub.textContent=habit.desc;
+      svg.appendChild(sub);
+    }
+  });
+
+  // Center dashboard disc
+  svg.appendChild(S("circle",{cx,cy,r:98,class:"center-disc"}));
+
+  const total=state.habits.length*31;
+  const done=Object.values(state.checks).filter(v=>v==="done").length;
+  const pct=total?Math.round(done/total*100):0;
+  const circumference=2*Math.PI*108;
+  const progress=S("circle",{
+    cx,cy,r:108,
+    class:"center-ring",
+    "stroke-dasharray":circumference,
+    "stroke-dashoffset":circumference*(1-pct/100),
+    transform:`rotate(-90 ${cx} ${cy})`
+  });
+  svg.appendChild(progress);
+
+  const monthText=S("text",{x:cx,y:cy-18,"text-anchor":"middle",class:"center-title"});
+  monthText.textContent=months[state.month];
+  svg.appendChild(monthText);
+
+  const rateText=S("text",{x:cx,y:cy+16,"text-anchor":"middle",class:"center-rate"});
+  rateText.textContent=pct+"%";
+  svg.appendChild(rateText);
+
+  const yearText=S("text",{x:cx,y:cy+42,"text-anchor":"middle",class:"center-sub"});
+  yearText.textContent=state.year+" — معدل الالتزام";
+  svg.appendChild(yearText);
+}
+function renderHabitList(){
+  const box=$("#habitList");box.innerHTML="";
+  state.habits.forEach((h,i)=>{
+    const row=document.createElement("div");row.className="habit-row";
+    row.innerHTML=`<h4>${esc(h.name)}</h4><p>${esc(h.desc||"")}</p><button class="btn">تعديل / حذف</button>`;
+    row.querySelector("button").onclick=()=>{
+      const a=prompt('اكتب "تعديل" أو "حذف"');
+      if(a==="تعديل"){editingHabit=i;openHabit(h)}
+      if(a==="حذف"&&confirm("حذف العادة؟")){
+        state.habits.splice(i,1);
+        const n={};Object.entries(state.checks).forEach(([k,v])=>{const[hi,di]=k.split("-").map(Number);if(hi<i)n[k]=v;if(hi>i)n[`${hi-1}-${di}`]=v});
+        state.checks=n;save();renderTracker();renderHabitList();updateAll();
+      }
+    };
+    box.appendChild(row);
+  });
+}
+function habitStats(){
+  return state.habits.map((h,i)=>{
+    let done=0,missed=0,best=0,cur=0;
+    for(let d=1;d<=31;d++){
+      const s=state.checks[`${i}-${d}`];
+      if(s==="done"){done++;cur++;best=Math.max(best,cur)}else{if(s==="missed")missed++;cur=0}
+    }
+    return{name:h.name,done,missed,rate:Math.round(done/31*100),streak:best};
+  });
+}
+function renderAnalysis(){
+  const stats=habitStats();
+  const totalDone=stats.reduce((a,b)=>a+b.done,0);
+  const totalPossible=Math.max(1,state.habits.length*31);
+  const rate=Math.round(totalDone/totalPossible*100);
+  const best=[...stats].sort((a,b)=>b.rate-a.rate)[0];
+  const weak=[...stats].sort((a,b)=>a.rate-b.rate)[0];
+  const bestStreak=Math.max(0,...stats.map(x=>x.streak));
+  $("#analysisRate").textContent=rate+"%";
+  $("#bestStreak").textContent=bestStreak+" يوم";
+  $("#bestHabit").textContent=best?best.name:"—";
+  $("#weakHabit").textContent=weak?weak.name:"—";
+
+  const bars=$("#habitBars");bars.innerHTML="";
+  stats.forEach(s=>{
+    bars.insertAdjacentHTML("beforeend",`<div class="bar-row"><div class="bar-label">${esc(s.name)}</div><div class="bar-track"><div class="bar-fill" style="width:${s.rate}%"></div></div><div class="bar-value">${s.rate}%</div></div>`);
+  });
+
+  const insights=$("#insights");insights.innerHTML="";
+  if(!stats.length){insights.innerHTML='<div class="insight">أضف عادات حتى يبدأ التحليل.</div>'}
+  else{
+    insights.insertAdjacentHTML("beforeend",`<div class="insight"><strong>أفضل نقطة قوة</strong>${best.name} هي أعلى عادة التزامًا بنسبة ${best.rate}%.</div>`);
+    insights.insertAdjacentHTML("beforeend",`<div class="insight warn"><strong>أكبر فرصة للتحسين</strong>${weak.name} هي الأقل التزامًا بنسبة ${weak.rate}%.</div>`);
+    insights.insertAdjacentHTML("beforeend",`<div class="insight"><strong>السلسلة الحالية</strong>أفضل سلسلة متواصلة وصلت إلى ${bestStreak} يومًا.</div>`);
+    const msg=rate>=80?"ممتاز جدًا، حافظ على نفس الإيقاع.":rate>=60?"أداؤك جيد، ركز على العادة الأضعف.":rate>=40?"تقدم متوسط، قلل عدد العادات أو بسّطها.":"ابدأ بعادتين فقط حتى تبني الاستمرارية.";
+    insights.insertAdjacentHTML("beforeend",`<div class="insight"><strong>التوصية</strong>${msg}</div>`);
+  }
+
+  const weekTotals=Array.from({length:7},()=>({done:0,total:0}));
+  for(let d=1;d<=31;d++){
+    const wd=new Date(state.year,state.month,d).getDay();
+    state.habits.forEach((_,h)=>{weekTotals[wd].total++;if(state.checks[`${h}-${d}`]==="done")weekTotals[wd].done++});
+  }
+  const wg=$("#weekGrid");wg.innerHTML="";
+  weekTotals.forEach((x,i)=>{
+    const p=x.total?Math.round(x.done/x.total*100):0;
+    wg.insertAdjacentHTML("beforeend",`<div class="week-day"><strong>${p}%</strong><span>${weekNames[i]}</span></div>`);
+  });
+
+  renderCommitmentChart();
+}
+function renderCommitmentChart(){
+  const svg=$("#commitmentChart");svg.innerHTML="";
+  const W=900,H=240,pad=34;
+  const vals=[];
+  for(let d=1;d<=31;d++){
+    let done=0;state.habits.forEach((_,h)=>{if(state.checks[`${h}-${d}`]==="done")done++});
+    vals.push(state.habits.length?Math.round(done/state.habits.length*100):0);
+  }
+  for(let i=0;i<5;i++){
+    const y=pad+i*(H-pad*2)/4;
+    const line=S("line",{x1:pad,x2:W-pad,y1:y,y2:y,stroke:"#e5ded4","stroke-width":"1"});svg.appendChild(line);
+  }
+  const pts=vals.map((v,i)=>({x:pad+i*(W-pad*2)/30,y:H-pad-v*(H-pad*2)/100,v}));
+  const poly=S("polyline",{points:pts.map(p=>`${p.x},${p.y}`).join(" "),class:"trend-line"});svg.appendChild(poly);
+  pts.forEach((p,i)=>{if(i%5===0||i===30){svg.appendChild(S("circle",{cx:p.x,cy:p.y,r:5,class:"trend-dot"}));const t=S("text",{x:p.x,y:H-8,"text-anchor":"middle"});t.textContent=i+1;svg.appendChild(t)}});
+}
+function renderGallery(){
+  const box=$("#gallery");box.innerHTML="";
+  if(!state.photos.length){box.innerHTML='<div class="empty">ارفع صور وجباتك أو صور تقدمك.</div>';return}
+  state.photos.forEach((p,i)=>{
+    const c=document.createElement("div");c.className="gallery-card";
+    c.innerHTML=`<img src="${p.src}"><div class="gallery-meta"><h4>${esc(p.title)}</h4><p>${esc(p.date)}</p><button class="btn danger" style="margin-top:8px">حذف</button></div>`;
+    c.querySelector("button").onclick=()=>{state.photos.splice(i,1);save();renderGallery();updateAll()};
+    box.appendChild(c);
+  });
+}
+function bindMeasures(){const latest=state.measurements[state.measurements.length-1]||{};["weight","height","waist","chest","arm","thigh","hips","fat"].forEach(id=>$("#"+id).value=latest[id]||"")}
+function updateAll(){
+  let done=0,missed=0;Object.values(state.checks).forEach(v=>{if(v==="done")done++;if(v==="missed")missed++});
+  const total=state.habits.length*31,neutral=Math.max(0,total-done-missed),pct=total?Math.round(done/total*100):0;
+  $("#doneStat").textContent=done;$("#missedStat").textContent=missed;$("#habitStat").textContent=state.habits.length;$("#photoStat").textContent=state.photos.length;
+  $("#doneTotal").textContent=done;$("#missedTotal").textContent=missed;$("#neutralTotal").textContent=neutral;$("#percentText").textContent=pct+"%";$("#progressRing").style.setProperty("--pct",pct+"%");
+  renderAnalysis();
+}
+function openHabit(h={name:"",desc:""}){$("#habitName").value=h.name;$("#habitDesc").value=h.desc;$("#habitModal").classList.remove("hidden")}
+
+
+function buildMonthlyRecommendation(rate,best,weak){
+  if(!state.habits.length)return "أضف عادات لبدء التحليل الشهري.";
+  if(rate>=85)return `أداء ممتاز. حافظ على استمراريتك، وأفضل عادة لديك هي ${best.name}.`;
+  if(rate>=65)return `أداء جيد. ركّز خلال الشهر القادم على ${weak.name} لرفع المعدل العام.`;
+  if(rate>=40)return `التزام متوسط. بسّط هدف ${weak.name} وحاول تثبيت وقت محدد له يوميًا.`;
+  return `ابدأ بعدد أقل من العادات، وركّز أولًا على ${best.name} لبناء سلسلة ثابتة.`;
+}
+function renderPrintSheet(){
+  const stats=habitStats();
+  const totalDone=stats.reduce((sum,x)=>sum+x.done,0);
+  const totalPossible=Math.max(1,state.habits.length*31);
+  const rate=Math.round(totalDone/totalPossible*100);
+  const best=[...stats].sort((a,b)=>b.rate-a.rate)[0]||{name:"—",rate:0};
+  const weak=[...stats].sort((a,b)=>a.rate-b.rate)[0]||{name:"—",rate:0};
+  const streak=Math.max(0,...stats.map(x=>x.streak));
+
+  $("#printUserLine").textContent=`المستخدم: ${state.profile.fullName||currentUser.name} — تقرير الالتزام الشهري`;
+  $("#printMonthBadge").textContent=`${months[state.month]} ${state.year}`;
+  $("#printRate").textContent=rate+"%";
+  $("#printDone").textContent=totalDone;
+  $("#printStreak").textContent=streak+" يوم";
+  $("#printBestHabit").textContent=best.name;
+  $("#printRecommendation").innerHTML=`<strong>ملخص الشهر</strong><br>${esc(buildMonthlyRecommendation(rate,best,weak))}`;
+
+  const rows=$("#printHabitRows");rows.innerHTML="";
+  stats.forEach(s=>{
+    rows.insertAdjacentHTML("beforeend",`
+      <tr>
+        <td>${esc(s.name)}</td>
+        <td>${s.done}</td>
+        <td>${s.missed}</td>
+        <td>${Math.max(0,31-s.done-s.missed)}</td>
+        <td>${s.rate}%</td>
+        <td>${s.streak} يوم</td>
+      </tr>`);
+  });
+
+  const clone=$("#trackerSvg").cloneNode(true);
+  clone.removeAttribute("id");
+  clone.setAttribute("viewBox","0 0 1180 820");
+  clone.querySelectorAll(".track-segment").forEach(el=>el.style.cursor="default");
+  const mount=$("#printTrackerMount");mount.innerHTML="";mount.appendChild(clone);
+}
+
+$("#authBtn").onclick=()=>{
+  const name=$("#authName").value.trim(),email=$("#authEmail").value.trim().toLowerCase(),password=$("#authPassword").value;
+  if(!name||!email||!password)return toast("أكمل البيانات");
+  const all=users();if(all[email]&&all[email].password!==password)return toast("كلمة المرور غير صحيحة");
+  if(!all[email]){all[email]={name,email,password};saveUsers(all)}
+  currentUser=all[email];localStorage.setItem("masariSession",email);showApp();
+};
+$("#logoutBtn").onclick=()=>{localStorage.removeItem("masariSession");location.reload()};
+$("#avatarBtn").onclick=()=>$("#avatarInput").click();
+$("#avatarInput").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$("#avatar").src=r.result;state.profile.avatar=r.result;save()};r.readAsDataURL(f)};
+$("#openProfileBtn").onclick=()=>$("#profileModal").classList.remove("hidden");
+$("#closeProfileModal").onclick=()=>$("#profileModal").classList.add("hidden");
+$("#saveProfile").onclick=()=>{["fullName","phone","email","birth","address","bio"].forEach(id=>state.profile[id]=$("#"+id).value.trim());state.profile.avatar=$("#avatar").src;save();bindProfile();$("#profileModal").classList.add("hidden");toast("تم الحفظ")};
+document.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{document.querySelectorAll(".mode").forEach(x=>x.classList.remove("active"));b.classList.add("active");currentMode=b.dataset.mode});
+$("#addHabitBtn").onclick=()=>{editingHabit=null;openHabit()};
+$("#cancelHabit").onclick=()=>$("#habitModal").classList.add("hidden");
+$("#saveHabit").onclick=()=>{const h={name:$("#habitName").value.trim(),desc:$("#habitDesc").value.trim()};if(!h.name)return toast("اكتب اسم العادة");if(editingHabit===null)state.habits.push(h);else state.habits[editingHabit]=h;save();$("#habitModal").classList.add("hidden");renderTracker();renderHabitList();updateAll()};
+$("#uploadGallery").onclick=()=>$("#galleryInput").click();
+$("#galleryInput").onchange=e=>{[...e.target.files].forEach(f=>{const r=new FileReader();r.onload=()=>{state.photos.push({src:r.result,title:f.name,date:new Date().toLocaleDateString("ar")});save();renderGallery();updateAll()};r.readAsDataURL(f)});e.target.value=""};
+$("#saveMeasures").onclick=()=>{const ids=["weight","height","waist","chest","arm","thigh","hips","fat"],rec={date:new Date().toISOString().slice(0,10)};ids.forEach(id=>rec[id]=$("#"+id).value);const i=state.measurements.findIndex(x=>x.date===rec.date);if(i>=0)state.measurements[i]=rec;else state.measurements.push(rec);save();toast("تم حفظ القياس")};
+$("#month").onchange=e=>{state.month=+e.target.value;load()};
+$("#year").onchange=e=>{state.year=+e.target.value;load()};
+$("#exportBtn").onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=`masari-${state.year}-${state.month+1}.json`;a.click();URL.revokeObjectURL(a.href)};
+$("#printPdfBtn").onclick=()=>{renderPrintSheet();setTimeout(()=>window.print(),120)};
+window.addEventListener("beforeprint",renderPrintSheet);
+document.querySelectorAll(".nav button[data-target]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.target)?.scrollIntoView({behavior:"smooth"})});
+const session=localStorage.getItem("masariSession");if(session&&users()[session]){currentUser=users()[session];showApp()}
+</script>
+</body>
+</html>
