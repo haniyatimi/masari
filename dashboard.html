@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>Masari | لوحة التحكم</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dashboard-page">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="sidebar-brand" href="dashboard.html">
+        <img src="assets/logo.svg" alt="Masari">
+        <span>Masari</span>
+      </a>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-target="trackerSection">المضمار</button>
+        <button class="nav-item" data-target="statsSection">الإحصائيات</button>
+        <button class="nav-item" id="profileBtn">الحساب الشخصي</button>
+      </nav>
+
+      <div class="sidebar-user">
+        <div class="user-avatar" id="userInitial">M</div>
+        <div>
+          <strong id="userName">مستخدم</strong>
+          <span id="userEmail">—</span>
+        </div>
+      </div>
+
+      <button id="logoutBtn" class="ghost-btn full">تسجيل الخروج</button>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="dashboard-header">
+        <div>
+          <span class="eyebrow">MASARI DASHBOARD</span>
+          <h1>لوحة المتابعة</h1>
+          <p>اختر الحالة، ثم اضغط على يوم داخل المضمار.</p>
+        </div>
+
+        <div class="header-actions">
+          <select id="monthSelect" class="select-control"></select>
+          <select id="yearSelect" class="select-control"></select>
+          <button id="addHabitBtn" class="primary-btn compact">إضافة عادة</button>
+        </div>
+      </header>
+
+      <section class="summary-grid">
+        <article class="summary-card lime">
+          <span>نسبة الالتزام</span>
+          <strong id="summaryRate">0%</strong>
+        </article>
+        <article class="summary-card violet">
+          <span>أيام منجزة</span>
+          <strong id="summaryDone">0</strong>
+        </article>
+        <article class="summary-card dark">
+          <span>عدد العادات</span>
+          <strong id="summaryHabits">0</strong>
+        </article>
+        <article class="summary-card dark">
+          <span>أفضل سلسلة</span>
+          <strong id="summaryStreak">0</strong>
+        </article>
+      </section>
+
+      <section id="trackerSection" class="panel tracker-panel">
+        <div class="panel-head">
+          <div>
+            <h2>مضمار العادات</h2>
+            <p>القائمة ضيقة والمضمار يأخذ المساحة الأساسية.</p>
+          </div>
+          <div class="status-switch">
+            <button class="status-btn done active" data-mode="done">منجز</button>
+            <button class="status-btn missed" data-mode="missed">غير منجز</button>
+          </div>
+        </div>
+
+        <div class="tracker-layout">
+          <aside id="habitList" class="compact-habits"></aside>
+
+          <div class="track-stage">
+            <svg id="trackerSvg" viewBox="0 0 1400 900" role="img" aria-label="مضمار العادات"></svg>
+          </div>
+        </div>
+      </section>
+
+      <section id="statsSection" class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>تحليل سريع</h2>
+            <p>نسبة الإنجاز لكل عادة.</p>
+          </div>
+        </div>
+        <div id="habitAnalytics" class="analytics-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="habitModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="habitModalTitle">إضافة عادة</h2>
+        <button id="closeHabitModal" class="icon-btn" aria-label="إغلاق">×</button>
+      </div>
+
+      <div class="field">
+        <label for="habitName">اسم العادة</label>
+        <input id="habitName" type="text" placeholder="مثال: قراءة 20 صفحة">
+      </div>
+
+      <div class="field">
+        <label for="habitDescription">الوصف المختصر</label>
+        <input id="habitDescription" type="text" placeholder="اختياري">
+      </div>
+
+      <div class="modal-actions">
+        <button id="deleteHabitBtn" class="danger-btn hidden">حذف</button>
+        <button id="saveHabitBtn" class="primary-btn compact">حفظ</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="profileModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2>الحساب الشخصي</h2>
+        <button id="closeProfileModal" class="icon-btn" aria-label="إغلاق">×</button>
+      </div>
+
+      <div class="profile-form-grid">
+        <div class="field">
+          <label for="profileName">الاسم</label>
+          <input id="profileName" type="text">
+        </div>
+        <div class="field">
+          <label for="profilePhone">رقم الهاتف</label>
+          <input id="profilePhone" type="text">
+        </div>
+        <div class="field full">
+          <label for="profileAddress">العنوان</label>
+          <input id="profileAddress" type="text">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="saveProfileBtn" class="primary-btn compact">حفظ</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
