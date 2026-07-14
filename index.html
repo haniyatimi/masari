@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مساري | نسخة المضمار</title>
+<meta name="theme-color" content="#f5f1ea">
+<style>
+:root{
+  --bg:#f4f1ea;
+  --surface:#fffdf9;
+  --surface-2:#f8f4ed;
+  --ink:#233129;
+  --muted:#76827b;
+  --line:#dfd8cc;
+  --sage:#6f8f79;
+  --sage-dark:#4d6b57;
+  --sage-soft:#eaf1eb;
+  --terra:#c9775b;
+  --done:#4f8a63;
+  --missed:#c85d56;
+  --neutral:#ece7df;
+  --shadow:0 20px 60px rgba(49,57,50,.11);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 0 0, rgba(111,143,121,.16), transparent 26%),
+    radial-gradient(circle at 100% 100%, rgba(201,119,91,.12), transparent 24%),
+    var(--bg);
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+img{display:block}
+.app{max-width:1550px;margin:auto;padding:18px}
+.shell{display:grid;grid-template-columns:290px minmax(0,1fr);gap:18px}
+.sidebar,.main{
+  background:rgba(255,253,249,.95);
+  border:1px solid var(--line);
+  border-radius:28px;
+  box-shadow:var(--shadow);
+}
+.sidebar{
+  padding:18px;position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;
+}
+.main{padding:22px}
+.profile-card{
+  text-align:center;padding:18px;border-radius:22px;
+  background:linear-gradient(145deg,#e7efe8,#faf4eb);
+  border:1px solid #d9e1d9;
+}
+.avatar-wrap{position:relative;width:96px;height:96px;margin:0 auto 12px}
+.avatar{
+  width:96px;height:96px;border-radius:50%;object-fit:cover;background:#dce5dd;
+  border:4px solid white;box-shadow:0 12px 28px rgba(79,109,89,.15)
+}
+.avatar-btn{
+  position:absolute;left:2px;bottom:2px;width:32px;height:32px;border-radius:50%;
+  border:2px solid white;background:var(--sage);color:white;font-weight:800
+}
+.profile-card h3{margin:0 0 5px;font-size:21px}
+.profile-card p{margin:0;color:var(--muted);font-size:13px}
+.nav{display:grid;gap:8px;margin:18px 0}
+.nav button{
+  border:0;background:transparent;color:var(--muted);text-align:right;
+  padding:12px 14px;border-radius:13px;font-weight:700
+}
+.nav button:hover,.nav button.active{background:var(--sage-soft);color:var(--sage-dark)}
+.side-card{
+  margin-top:14px;padding:15px;border-radius:18px;
+  background:var(--surface-2);border:1px solid var(--line)
+}
+.side-card h4{margin:0 0 12px}
+.progress-ring{
+  width:132px;height:132px;border-radius:50%;
+  margin:auto;display:grid;place-items:center;
+  background:conic-gradient(var(--sage) var(--pct),#e6e0d6 0);
+  position:relative
+}
+.progress-ring::after{
+  content:"";position:absolute;inset:12px;border-radius:50%;background:var(--surface)
+}
+.progress-ring .inner{position:relative;z-index:1;text-align:center}
+.progress-ring strong{display:block;font-size:30px}
+.progress-ring span{font-size:12px;color:var(--muted)}
+.legend{display:grid;gap:8px;margin-top:15px}
+.legend-row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.legend-row i{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:7px}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.brand h1{margin:0;font-size:40px;letter-spacing:-1.2px}
+.brand h1 span{color:var(--sage)}
+.brand p{margin:6px 0 0;color:var(--muted)}
+.actions{display:flex;gap:9px;flex-wrap:wrap}
+.control,.btn{
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:11px 14px;border-radius:13px;
+}
+.btn.primary{background:var(--sage);border-color:var(--sage);color:#fff}
+.btn.warm{background:var(--terra);border-color:var(--terra);color:#fff}
+.btn.danger{color:#a14d46}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin:20px 0}
+.hero-banner{
+  min-height:250px;border-radius:25px;padding:28px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(120deg,rgba(36,55,46,.92),rgba(79,109,89,.84)), linear-gradient(135deg,#7c9784,#d5c2a5);
+}
+.hero-banner::before,.hero-banner::after{
+  content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.12)
+}
+.hero-banner::before{width:240px;height:240px;left:-80px;top:-60px}
+.hero-banner::after{width:170px;height:170px;left:120px;bottom:-90px}
+.hero-banner h2{position:relative;z-index:1;font-size:35px;margin:0 0 10px}
+.hero-banner p{position:relative;z-index:1;max-width:620px;line-height:1.8;color:#ecf4ee;margin:0}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px
+}
+.stat-card strong{display:block;font-size:30px;color:var(--sage-dark)}
+.stat-card span{font-size:13px;color:var(--muted)}
+.section{
+  margin-top:18px;background:var(--surface);
+  border:1px solid var(--line);border-radius:24px;padding:18px
+}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.section-head h2{margin:0;font-size:22px}
+.section-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.mode-switch{display:flex;gap:7px;padding:5px;background:#f2ede5;border-radius:13px}
+.mode{border:0;background:transparent;color:var(--muted);padding:9px 12px;border-radius:9px;font-weight:800}
+.mode.done.active{background:var(--done);color:#fff}
+.mode.missed.active{background:var(--missed);color:#fff}
+.race-list{display:grid;gap:16px}
+.race-card{
+  border:1px solid var(--line);border-radius:22px;padding:16px;background:#fffefa
+}
+.race-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+.race-title h3{margin:0 0 4px;font-size:18px}
+.race-title p{margin:0;color:var(--muted);font-size:12px}
+.menu{border:0;background:transparent;color:var(--muted);font-size:22px}
+.track{
+  border:1px solid #ddd6ca;border-radius:999px;padding:10px;background:#f7f3ec;
+}
+.track-grid{
+  direction:ltr;display:grid;grid-template-columns:repeat(16,minmax(31px,1fr));gap:8px;
+}
+.track-grid.bottom{grid-template-columns:repeat(15,minmax(31px,1fr));margin-top:8px;padding-left:20px}
+.day{
+  aspect-ratio:1;border-radius:11px;border:1px solid #d5cec2;background:var(--neutral);
+  color:#69736c;font-weight:800;min-width:31px;transition:.15s
+}
+.day:hover{transform:translateY(-1px)}
+.day.done{background:var(--done);border-color:var(--done);color:#fff}
+.day.missed{background:var(--missed);border-color:var(--missed);color:#fff}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.gallery-card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}
+.gallery-card img{width:100%;height:150px;object-fit:cover;background:#ece7de}
+.gallery-meta{padding:10px}
+.gallery-meta h4{margin:0 0 4px;font-size:14px}
+.gallery-meta p{margin:0;color:var(--muted);font-size:12px}
+.empty{
+  grid-column:1/-1;border:1px dashed var(--line);border-radius:18px;
+  padding:34px;text-align:center;color:var(--muted);background:#fbf9f5
+}
+.measure-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.measure{border:1px solid var(--line);border-radius:16px;padding:13px;background:#fbfaf7}
+.measure label{display:block;color:var(--muted);font-size:12px}
+.measure input{width:100%;border:0;background:transparent;outline:none;font-size:22px;font-weight:800;color:var(--ink)}
+.chart{margin-top:15px;border:1px solid var(--line);border-radius:18px;padding:12px;background:#fff}
+.chart svg{width:100%;height:220px}
+.chart text{fill:var(--muted);font-size:11px}
+.chart .line{fill:none;stroke:var(--sage);stroke-width:4}
+.chart .dot{fill:var(--terra);stroke:#fff;stroke-width:3}
+.modal{
+  position:fixed;inset:0;background:rgba(31,43,38,.54);
+  display:grid;place-items:center;padding:20px;z-index:40
+}
+.modal-card{
+  width:min(620px,100%);background:var(--surface);
+  border:1px solid var(--line);border-radius:24px;padding:22px;
+  box-shadow:0 26px 80px rgba(0,0,0,.22)
+}
+.modal-card h2{margin-top:0}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
+.field input,.field textarea{
+  width:100%;border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff;outline:none
+}
+.field input:focus,.field textarea:focus{border-color:var(--sage);box-shadow:0 0 0 3px rgba(111,143,121,.12)}
+.field.full{grid-column:1/-1}
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translate(-50%,25px);
+  opacity:0;background:#27352e;color:#fff;padding:11px 16px;border-radius:12px;transition:.2s;z-index:80
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1180px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto}
+}
+@media(max-width:920px){
+  .hero,.grid-2{grid-template-columns:1fr}
+  .measure-grid{grid-template-columns:1fr 1fr}
+  .track-grid{grid-template-columns:repeat(8,minmax(32px,1fr))}
+  .track-grid.bottom{grid-template-columns:repeat(8,minmax(32px,1fr));padding-left:0}
+}
+@media(max-width:620px){
+  .app{padding:8px}
+  .main,.sidebar{padding:13px;border-radius:18px}
+  .brand h1{font-size:30px}
+  .hero-banner h2{font-size:28px}
+  .gallery{grid-template-columns:1fr}
+  .profile-grid{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  .measure-grid{grid-template-columns:1fr}
+  .track-grid,.track-grid.bottom{grid-template-columns:repeat(6,minmax(34px,1fr))}
+}
+</style>
+</head>
+<body>
+
+<input id="avatarInput" type="file" accept="image/*" hidden>
+<input id="galleryInput" type="file" accept="image/*" multiple hidden>
+
+<div id="authModal" class="modal">
+  <div class="modal-card">
+    <h2>تسجيل الدخول / إنشاء حساب</h2>
+    <p style="color:var(--muted)">إذا لم يكن الحساب موجودًا سيتم إنشاؤه تلقائيًا.</p>
+    <div class="profile-grid">
+      <div class="field"><label>الاسم</label><input id="authName" placeholder="اسمك الكامل"></div>
+      <div class="field"><label>البريد الإلكتروني</label><input id="authEmail" type="email" placeholder="name@example.com"></div>
+      <div class="field full"><label>كلمة المرور</label><input id="authPassword" type="password" placeholder="••••••••"></div>
+    </div>
+    <button class="btn primary" style="width:100%;margin-top:14px" id="authBtn">دخول / إنشاء</button>
+    <p style="font-size:12px;color:var(--muted);line-height:1.7">هذه نسخة شخصية تحفظ البيانات داخل متصفحك فقط.</p>
+  </div>
+</div>
+
+<div id="profileModal" class="modal hidden">
+  <div class="modal-card">
+    <h2>حسابي الشخصي</h2>
+    <div class="profile-grid">
+      <div class="field"><label>الاسم الكامل</label><input id="fullName"></div>
+      <div class="field"><label>رقم الهاتف</label><input id="phone"></div>
+      <div class="field"><label>البريد الإلكتروني</label><input id="email"></div>
+      <div class="field"><label>تاريخ الميلاد</label><input id="birth" type="date"></div>
+      <div class="field full"><label>عنوان السكن</label><input id="address"></div>
+      <div class="field full"><label>نبذة شخصية</label><textarea id="bio" rows="3"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="closeProfileModal">إغلاق</button>
+      <button class="btn primary" id="saveProfile">حفظ المعلومات</button>
+    </div>
+  </div>
+</div>
+
+<div id="habitModal" class="modal hidden">
+  <div class="modal-card">
+    <h2>إضافة أو تعديل عادة</h2>
+    <div class="profile-grid">
+      <div class="field"><label>اسم العادة</label><input id="habitName"></div>
+      <div class="field full"><label>الوصف</label><input id="habitDesc"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="cancelHabit">إلغاء</button>
+      <button class="btn primary" id="saveHabit">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="profile-card">
+        <div class="avatar-wrap">
+          <img id="avatar" class="avatar" alt="الصورة الشخصية">
+          <button id="avatarBtn" class="avatar-btn">＋</button>
+        </div>
+        <h3 id="sideName">المستخدم</h3>
+        <p id="sideEmail"></p>
+      </div>
+
+      <div class="nav">
+        <button class="active" data-target="dashboard">⌂ لوحة التحكم</button>
+        <button data-target="habitsSection">🏁 المضمار اليومي</button>
+        <button data-target="foodSection">🍽 الصور والوجبات</button>
+        <button data-target="measureSection">📏 المقاسات</button>
+        <button id="openProfileBtn">👤 حسابي الشخصي</button>
+      </div>
+
+      <div class="side-card">
+        <h4>ملخص الشهر</h4>
+        <div id="progressRing" class="progress-ring" style="--pct:0%">
+          <div class="inner"><strong id="percentText">0%</strong><span>معدل الإنجاز</span></div>
+        </div>
+        <div class="legend">
+          <div class="legend-row"><span><i style="background:var(--done)"></i>منجز</span><b id="doneTotal">0</b></div>
+          <div class="legend-row"><span><i style="background:var(--missed)"></i>غير منجز</span><b id="missedTotal">0</b></div>
+          <div class="legend-row"><span><i style="background:#afb2ac"></i>غير محدد</span><b id="neutralTotal">0</b></div>
+        </div>
+      </div>
+
+      <button id="logoutBtn" class="btn" style="width:100%;margin-top:14px">تسجيل الخروج</button>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="brand">
+          <h1>مساري<span>.</span></h1>
+          <p>تصميم أبسط، مضمار أوضح، وحساب شخصي منفصل.</p>
+        </div>
+        <div class="actions">
+          <select id="month" class="control"></select>
+          <select id="year" class="control"></select>
+          <button id="exportBtn" class="btn">تصدير البيانات</button>
+        </div>
+      </div>
+
+      <section id="dashboard" class="hero">
+        <div class="hero-banner">
+          <h2>سِر على المضمار يومًا بعد يوم</h2>
+          <p>كل عادة أصبحت في شكل مضمار واضح. اختر الحالة ثم اضغط على اليوم المطلوب لتسجيل الإنجاز أو عدم الإنجاز.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card"><strong id="doneStat">0</strong><span>أيام منجزة</span></div>
+          <div class="stat-card"><strong id="missedStat">0</strong><span>أيام غير منجزة</span></div>
+          <div class="stat-card"><strong id="habitStat">0</strong><span>عدد العادات</span></div>
+          <div class="stat-card"><strong id="photoStat">0</strong><span>صور محفوظة</span></div>
+        </div>
+      </section>
+
+      <section id="habitsSection" class="section">
+        <div class="section-head">
+          <div>
+            <h2>العادات بشكل مضمار سباق</h2>
+            <p>بدون رموز للعادات، فقط الاسم والوصف مع مضمار 31 يومًا.</p>
+          </div>
+          <div style="display:flex;gap:9px;flex-wrap:wrap">
+            <div class="mode-switch">
+              <button class="mode done active" data-mode="done">منجز</button>
+              <button class="mode missed" data-mode="missed">غير منجز</button>
+            </div>
+            <button id="addHabitBtn" class="btn primary">＋ إضافة عادة</button>
+          </div>
+        </div>
+        <div id="raceList" class="race-list"></div>
+      </section>
+
+      <div class="grid-2">
+        <section id="foodSection" class="section">
+          <div class="section-head">
+            <div>
+              <h2>صور الوجبات والتقدم</h2>
+              <p>ارفع صور وجباتك أو صور قبل وبعد.</p>
+            </div>
+            <button id="uploadGallery" class="btn warm">＋ رفع صور</button>
+          </div>
+          <div id="gallery" class="gallery"></div>
+        </section>
+
+        <section id="measureSection" class="section">
+          <div class="section-head">
+            <div>
+              <h2>مقاسات الجسم</h2>
+              <p>سيتم حفظ القياس بتاريخ اليوم مع رسم بياني للوزن.</p>
+            </div>
+            <button id="saveMeasures" class="btn primary">حفظ القياس</button>
+          </div>
+          <div class="measure-grid">
+            <div class="measure"><label>الوزن كغ</label><input id="weight" type="number" step="0.1"></div>
+            <div class="measure"><label>الطول سم</label><input id="height" type="number" step="0.1"></div>
+            <div class="measure"><label>الخصر سم</label><input id="waist" type="number" step="0.1"></div>
+            <div class="measure"><label>الصدر سم</label><input id="chest" type="number" step="0.1"></div>
+            <div class="measure"><label>الذراع سم</label><input id="arm" type="number" step="0.1"></div>
+            <div class="measure"><label>الفخذ سم</label><input id="thigh" type="number" step="0.1"></div>
+            <div class="measure"><label>الورك سم</label><input id="hips" type="number" step="0.1"></div>
+            <div class="measure"><label>الدهون %</label><input id="fat" type="number" step="0.1"></div>
+          </div>
+          <div class="chart">
+            <svg id="weightChart" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const defaultAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='300' height='300' rx='150' fill='%23dfe8e1'/%3E%3Ccircle cx='150' cy='112' r='48' fill='%236f8f7a'/%3E%3Cpath d='M55 260c12-58 49-88 95-88s83 30 95 88' fill='%236f8f7a'/%3E%3C/svg%3E";
+const defaultHabits = [
+  {name:"شرب الماء",desc:"8 أكواب يوميًا"},
+  {name:"قراءة",desc:"20 صفحة يوميًا"},
+  {name:"تمرين رياضي",desc:"45 دقيقة"},
+  {name:"نوم مبكر",desc:"قبل 11 مساءً"}
+];
+
+let currentUser = null;
+let currentMode = "done";
+let editingHabit = null;
+let state = {
+  month:new Date().getMonth(),
+  year:new Date().getFullYear(),
+  profile:{},
+  habits:[],
+  checks:{},
+  photos:[],
+  measurements:[]
+};
+
+function toast(text){
+  const el = $("#toast");
+  el.textContent = text;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),1700);
+}
+function getUsers(){ return JSON.parse(localStorage.getItem("masariUsers") || "{}"); }
+function saveUsers(data){ localStorage.setItem("masariUsers", JSON.stringify(data)); }
+function storageKey(){ return `masari:${currentUser.email}:${state.year}-${state.month}`; }
+function saveState(){ localStorage.setItem(storageKey(), JSON.stringify(state)); }
+function esc(v){
+  return String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function setupSelectors(){
+  $("#month").innerHTML="";
+  $("#year").innerHTML="";
+  months.forEach((m,i)=>$("#month").insertAdjacentHTML("beforeend",`<option value="${i}">${m}</option>`));
+  for(let y=2025;y<=2035;y++) $("#year").insertAdjacentHTML("beforeend",`<option>${y}</option>`);
+  $("#month").value = state.month;
+  $("#year").value = state.year;
+}
+function freshState(){
+  return {
+    month:state.month,
+    year:state.year,
+    profile:{
+      fullName:currentUser.name,
+      email:currentUser.email,
+      phone:"",
+      birth:"",
+      address:"",
+      bio:"",
+      avatar:defaultAvatar
+    },
+    habits:JSON.parse(JSON.stringify(defaultHabits)),
+    checks:{},
+    photos:[],
+    measurements:[]
+  };
+}
+function loadState(){
+  const raw = localStorage.getItem(storageKey());
+  state = raw ? JSON.parse(raw) : freshState();
+  bindProfile();
+  renderRaces();
+  renderGallery();
+  bindLatestMeasurements();
+  renderWeightChart();
+  updateStats();
+  saveState();
+}
+function showApp(){
+  $("#authModal").classList.add("hidden");
+  $("#app").classList.remove("hidden");
+  setupSelectors();
+  loadState();
+}
+function bindProfile(){
+  const p = state.profile || {};
+  $("#avatar").src = p.avatar || defaultAvatar;
+  $("#sideName").textContent = p.fullName || currentUser.name;
+  $("#sideEmail").textContent = p.email || currentUser.email;
+  ["fullName","phone","email","birth","address","bio"].forEach(id => $("#"+id).value = p[id] || "");
+}
+function renderRaces(){
+  const box = $("#raceList");
+  box.innerHTML = "";
+  state.habits.forEach((habit,index)=>{
+    const topDays = Array.from({length:16},(_,i)=>i+1);
+    const bottomDays = Array.from({length:15},(_,i)=>31-i);
+    const card = document.createElement("article");
+    card.className = "race-card";
+    card.innerHTML = `
+      <div class="race-head">
+        <div class="race-title">
+          <h3>${esc(habit.name)}</h3>
+          <p>${esc(habit.desc || "")}</p>
+        </div>
+        <button class="menu" title="تعديل أو حذف">⋮</button>
+      </div>
+      <div class="track">
+        <div class="track-grid top"></div>
+        <div class="track-grid bottom"></div>
+      </div>
+    `;
+    const topBox = card.querySelector(".track-grid.top");
+    const bottomBox = card.querySelector(".track-grid.bottom");
+
+    topDays.forEach(day => topBox.appendChild(makeDayButton(index, day)));
+    bottomDays.forEach(day => bottomBox.appendChild(makeDayButton(index, day)));
+
+    card.querySelector(".menu").onclick = ()=>{
+      const action = prompt('اكتب "تعديل" أو "حذف"');
+      if(action === "تعديل"){
+        editingHabit = index;
+        openHabitModal(habit);
+      } else if(action === "حذف" && confirm(`حذف عادة "${habit.name}"؟`)){
+        state.habits.splice(index,1);
+        const next = {};
+        Object.entries(state.checks).forEach(([key,val])=>{
+          const [i,d] = key.split("-").map(Number);
+          if(i < index) next[key] = val;
+          if(i > index) next[`${i-1}-${d}`] = val;
+        });
+        state.checks = next;
+        saveState();
+        renderRaces();
+        updateStats();
+      }
+    };
+    box.appendChild(card);
+  });
+  if(!state.habits.length){
+    box.innerHTML = '<div class="empty">لا توجد عادات بعد. أضف أول عادة.</div>';
+  }
+}
+function makeDayButton(habitIndex, day){
+  const btn = document.createElement("button");
+  btn.className = "day";
+  const st = state.checks[`${habitIndex}-${day}`];
+  if(st) btn.classList.add(st);
+  btn.textContent = day;
+  btn.onclick = ()=>{
+    state.checks[`${habitIndex}-${day}`] = currentMode;
+    saveState();
+    renderRaces();
+    updateStats();
+  };
+  return btn;
+}
+function renderGallery(){
+  const box = $("#gallery");
+  box.innerHTML = "";
+  if(!state.photos.length){
+    box.innerHTML = '<div class="empty">ارفع صور وجباتك أو صور تقدمك لتظهر هنا.</div>';
+    return;
+  }
+  state.photos.forEach((photo,index)=>{
+    const card = document.createElement("div");
+    card.className = "gallery-card";
+    card.innerHTML = `
+      <img src="${photo.src}" alt="صورة محفوظة">
+      <div class="gallery-meta">
+        <h4>${esc(photo.title)}</h4>
+        <p>${esc(photo.date)}</p>
+        <button class="btn danger" style="margin-top:8px;padding:7px 10px">حذف</button>
+      </div>`;
+    card.querySelector("button").onclick = ()=>{
+      state.photos.splice(index,1);
+      saveState();
+      renderGallery();
+      updateStats();
+    };
+    box.appendChild(card);
+  });
+}
+function bindLatestMeasurements(){
+  const latest = state.measurements[state.measurements.length-1] || {};
+  ["weight","height","waist","chest","arm","thigh","hips","fat"].forEach(id=>{
+    $("#"+id).value = latest[id] || "";
+  });
+}
+function renderWeightChart(){
+  const svg = $("#weightChart");
+  svg.innerHTML = "";
+  const entries = state.measurements.filter(x=>Number(x.weight)).slice(-8);
+  if(entries.length < 2){
+    svg.innerHTML = '<text x="300" y="115" text-anchor="middle">أضف قياسين للوزن حتى يظهر الرسم البياني</text>';
+    return;
+  }
+  const width=600, height=220, pad=34;
+  const values = entries.map(x=>Number(x.weight));
+  const min = Math.min(...values)-1;
+  const max = Math.max(...values)+1;
+  const range = Math.max(1, max-min);
+  const pts = entries.map((e,i)=>{
+    const x = pad + i*(width-pad*2)/(entries.length-1);
+    const y = height-pad - (Number(e.weight)-min)*(height-pad*2)/range;
+    return {x,y,e};
+  });
+  for(let i=0;i<4;i++){
+    const y = pad + i*(height-pad*2)/3;
+    const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute("x1",pad); line.setAttribute("x2",width-pad);
+    line.setAttribute("y1",y); line.setAttribute("y2",y);
+    line.setAttribute("stroke","#e5ded4"); line.setAttribute("stroke-width","1");
+    svg.appendChild(line);
+  }
+  const poly = document.createElementNS("http://www.w3.org/2000/svg","polyline");
+  poly.setAttribute("points", pts.map(p=>`${p.x},${p.y}`).join(" "));
+  poly.setAttribute("class","line");
+  svg.appendChild(poly);
+  pts.forEach(p=>{
+    const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx",p.x); c.setAttribute("cy",p.y); c.setAttribute("r","6"); c.setAttribute("class","dot");
+    svg.appendChild(c);
+    const t = document.createElementNS("http://www.w3.org/2000/svg","text");
+    t.setAttribute("x",p.x); t.setAttribute("y",p.y-12); t.setAttribute("text-anchor","middle");
+    t.textContent = p.e.weight+" كغ";
+    svg.appendChild(t);
+  });
+}
+function updateStats(){
+  let done=0, missed=0;
+  Object.values(state.checks).forEach(v=>{ if(v==="done") done++; if(v==="missed") missed++; });
+  const total = state.habits.length*31;
+  const neutral = Math.max(0,total-done-missed);
+  const percent = total ? Math.round(done/total*100) : 0;
+  $("#doneStat").textContent = done;
+  $("#missedStat").textContent = missed;
+  $("#habitStat").textContent = state.habits.length;
+  $("#photoStat").textContent = state.photos.length;
+  $("#doneTotal").textContent = done;
+  $("#missedTotal").textContent = missed;
+  $("#neutralTotal").textContent = neutral;
+  $("#percentText").textContent = percent+"%";
+  $("#progressRing").style.setProperty("--pct", percent+"%");
+}
+function openHabitModal(habit={name:"",desc:""}){
+  $("#habitName").value = habit.name || "";
+  $("#habitDesc").value = habit.desc || "";
+  $("#habitModal").classList.remove("hidden");
+}
+
+$("#authBtn").onclick = ()=>{
+  const name = $("#authName").value.trim();
+  const email = $("#authEmail").value.trim().toLowerCase();
+  const password = $("#authPassword").value;
+  if(!name || !email || !password) return toast("أكمل جميع البيانات");
+  const all = getUsers();
+  if(all[email] && all[email].password !== password) return toast("كلمة المرور غير صحيحة");
+  if(!all[email]){
+    all[email] = {name,email,password};
+    saveUsers(all);
+  }
+  currentUser = all[email];
+  localStorage.setItem("masariSession", email);
+  showApp();
+};
+$("#logoutBtn").onclick = ()=>{
+  localStorage.removeItem("masariSession");
+  location.reload();
+};
+
+$("#avatarBtn").onclick = ()=>$("#avatarInput").click();
+$("#avatarInput").onchange = e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    $("#avatar").src = reader.result;
+    state.profile.avatar = reader.result;
+    saveState();
+  };
+  reader.readAsDataURL(file);
+};
+
+$("#openProfileBtn").onclick = ()=>{
+  $("#profileModal").classList.remove("hidden");
+};
+$("#closeProfileModal").onclick = ()=>{
+  $("#profileModal").classList.add("hidden");
+};
+$("#saveProfile").onclick = ()=>{
+  const fields = ["fullName","phone","email","birth","address","bio"];
+  state.profile = {...state.profile};
+  fields.forEach(id=>state.profile[id] = $("#"+id).value.trim());
+  state.profile.avatar = $("#avatar").src;
+  saveState();
+  bindProfile();
+  $("#profileModal").classList.add("hidden");
+  toast("تم حفظ المعلومات الشخصية");
+};
+
+document.querySelectorAll(".mode").forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll(".mode").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    currentMode = btn.dataset.mode;
+  };
+});
+
+$("#addHabitBtn").onclick = ()=>{
+  editingHabit = null;
+  openHabitModal();
+};
+$("#cancelHabit").onclick = ()=>$("#habitModal").classList.add("hidden");
+$("#saveHabit").onclick = ()=>{
+  const habit = {
+    name: $("#habitName").value.trim(),
+    desc: $("#habitDesc").value.trim()
+  };
+  if(!habit.name) return toast("اكتب اسم العادة");
+  if(editingHabit===null) state.habits.push(habit);
+  else state.habits[editingHabit] = habit;
+  saveState();
+  $("#habitModal").classList.add("hidden");
+  renderRaces();
+  updateStats();
+  toast("تم حفظ العادة");
+};
+
+$("#uploadGallery").onclick = ()=>$("#galleryInput").click();
+$("#galleryInput").onchange = e=>{
+  [...e.target.files].forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      state.photos.push({
+        src: reader.result,
+        title: file.name,
+        date: new Date().toLocaleDateString("ar")
+      });
+      saveState();
+      renderGallery();
+      updateStats();
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = "";
+};
+
+$("#saveMeasures").onclick = ()=>{
+  const ids = ["weight","height","waist","chest","arm","thigh","hips","fat"];
+  const record = {date:new Date().toISOString().slice(0,10)};
+  ids.forEach(id=>record[id] = $("#"+id).value);
+  const existing = state.measurements.findIndex(x=>x.date===record.date);
+  if(existing>=0) state.measurements[existing] = record;
+  else state.measurements.push(record);
+  saveState();
+  renderWeightChart();
+  toast("تم حفظ القياس");
+};
+
+$("#month").onchange = e=>{
+  state.month = +e.target.value;
+  loadState();
+};
+$("#year").onchange = e=>{
+  state.year = +e.target.value;
+  loadState();
+};
+
+$("#exportBtn").onclick = ()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `masari-${state.year}-${state.month+1}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+document.querySelectorAll(".nav button[data-target]").forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.target)?.scrollIntoView({behavior:"smooth"});
+  };
+});
+
+const session = localStorage.getItem("masariSession");
+if(session && getUsers()[session]){
+  currentUser = getUsers()[session];
+  showApp();
+}
+</script>
+</body>
+</html>
